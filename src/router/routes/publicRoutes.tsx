@@ -1,7 +1,9 @@
 import type { RouteObject } from "react-router-dom";
 import Login from "@/views/auth/Login";
 import Register from "@/views/auth/Register";
-import { LoginProps, SignUpProps } from "@/types/auth";
+import AdminLogin from "@/views/auth/AdminLogin";
+
+import type { LoginProps, SignUpProps } from "@/types/auth";
 
 const loginProps: LoginProps = {
   email: "",
@@ -22,6 +24,10 @@ const publicRoutes: RouteObject[] = [
   {
     path: "/register",
     element: <Register {...signupProps} />,
+  },
+  {
+    path: "/admin/login",
+    element: <AdminLogin {...loginProps} />,
   },
 ];
 

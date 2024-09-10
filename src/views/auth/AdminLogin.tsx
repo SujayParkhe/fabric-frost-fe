@@ -1,30 +1,52 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FcGoogle } from "react-icons/fc";
-import { FaApple } from "react-icons/fa6";
+import { useToast } from "@/components/hooks/use-toast";
+import { adminLogin } from "@/store/reducers/authReducer";
 import { CgPathExclude } from "react-icons/cg";
 
 import type { LoginProps } from "@/types/auth";
+import type { AppDispatch } from "@/store";
 
-const Login: React.FC<LoginProps> = ({ email, password }) => {
+const AdminLogin: React.FC<LoginProps> = ({ email, password }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const [signinDetails, setSigninDetails] = useState<LoginProps>({
     email,
     password,
   });
+  const { toast } = useToast();
 
-  const handleUserLoginDetails = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAdminLoginDetails = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSigninDetails({
       ...signinDetails,
       [e.target.name]: e.target.value,
     });
   };
 
-  const submitUserLoginDetails = (e: React.FormEvent<HTMLFormElement>) => {
+  const submitAdminLoginDetails = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(signinDetails);
+    if (
+      signinDetails.email === "admin@fabricfrost.com" &&
+      signinDetails.password === "admin123"
+    ) {
+      toast({
+        title: "Login Successful",
+        description: "Welcome to the admin panel.",
+        duration: 3000,
+      });
+      // Here you would typically redirect to the admin dashboard
+    } else {
+      toast({
+        title: "Login Failed",
+        description: "Invalid email or password. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+    dispatch(adminLogin(signinDetails));
   };
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center">
@@ -33,14 +55,14 @@ const Login: React.FC<LoginProps> = ({ email, password }) => {
           <div className="flex flex-col space-y-2 text-center mb-6">
             <CgPathExclude className="mx-auto h-12 w-12" />
             <h1 className="text-2xl font-semibold tracking-tight">
-              FabricFrost
+              FabricFrost Admin
             </h1>
             <p className="text-sm text-muted-foreground">
-              Hello again! Let’s get you back to shopping
+              Log in to your admin account
             </p>
           </div>
           <div className="grid gap-6">
-            <form onSubmit={submitUserLoginDetails}>
+            <form onSubmit={submitAdminLoginDetails}>
               <div className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email*</Label>
@@ -48,10 +70,10 @@ const Login: React.FC<LoginProps> = ({ email, password }) => {
                     {...signinDetails}
                     id="email"
                     name="email"
-                    placeholder="name@example.com"
+                    placeholder="admin@fabricfrost.com"
                     type="email"
                     value={signinDetails.email ?? ""}
-                    onChange={handleUserLoginDetails}
+                    onChange={handleAdminLoginDetails}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -60,32 +82,15 @@ const Login: React.FC<LoginProps> = ({ email, password }) => {
                     {...signinDetails}
                     id="password"
                     name="password"
-                    placeholder="Enter your password"
+                    placeholder="Enter your admin password"
                     type="password"
                     value={signinDetails.password ?? ""}
-                    onChange={handleUserLoginDetails}
+                    onChange={handleAdminLoginDetails}
                   />
                 </div>
-                <Button type="submit">Sign In</Button>
+                <Button type="submit">Log into Admin Panel</Button>
               </div>
             </form>
-            <div className="relative flex items-center">
-              <div className="flex-grow border-t border-muted-foreground"></div>
-              <span className="mx-4 text-xs uppercase text-muted-foreground bg-card px-2">
-                Or continue with
-              </span>
-              <div className="flex-grow border-t border-muted-foreground"></div>
-            </div>
-            <div className="grid grid-cols-2 gap-6">
-              <Button variant="outline" type="button">
-                <FcGoogle className="mr-2 h-4 w-4" />
-                Google
-              </Button>
-              <Button variant="outline" type="button">
-                <FaApple className="mr-2 h-4 w-4" />
-                Apple
-              </Button>
-            </div>
           </div>
           <div className="mt-6 space-y-4">
             <p className="text-center text-sm text-muted-foreground">
@@ -93,16 +98,16 @@ const Login: React.FC<LoginProps> = ({ email, password }) => {
                 to="/forgot-password"
                 className="underline underline-offset-4 hover:text-primary"
               >
-                Forgot your password?
+                Forgot your admin password?
               </Link>
             </p>
             <p className="text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              Not an admin?{" "}
               <Link
-                to="/register"
+                to="/login"
                 className="underline underline-offset-4 hover:text-primary"
               >
-                Sign up
+                Return to customer login
               </Link>
             </p>
           </div>
@@ -112,4 +117,4 @@ const Login: React.FC<LoginProps> = ({ email, password }) => {
   );
 };
 
-export default Login;
+export default AdminLogin;
