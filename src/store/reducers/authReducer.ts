@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { AxiosError } from "axios";
 import api from "@/api/api";
 import { LoginProps } from "@/types/auth";
+
+import { ErrorMessage } from "@/types/auth";
 
 export const adminLogin = createAsyncThunk(
   "auth/admin_login",
@@ -11,8 +14,9 @@ export const adminLogin = createAsyncThunk(
         withCredentials: true,
       });
       console.log(data);
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      const error = err as AxiosError<ErrorMessage>;
+      console.log(error.response?.data.message);
     }
   }
 );

@@ -9,4 +9,8 @@ type SignUpProps = {
   password: string;
 };
 
-export type { LoginProps, SignUpProps };
+interface ErrorMessage {
+  message: string;
+}
+
+export type { LoginProps, SignUpProps, ErrorMessage };

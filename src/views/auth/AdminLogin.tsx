@@ -9,7 +9,7 @@ import { adminLogin } from "@/store/reducers/authReducer";
 import { CgPathExclude } from "react-icons/cg";
 
 import type { LoginProps } from "@/types/auth";
-import type { AppDispatch } from "@/store";
+import type { AppDispatch } from "@/store/store";
 
 const AdminLogin: React.FC<LoginProps> = ({ email, password }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -48,6 +48,7 @@ const AdminLogin: React.FC<LoginProps> = ({ email, password }) => {
     }
     dispatch(adminLogin(signinDetails));
   };
+
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
