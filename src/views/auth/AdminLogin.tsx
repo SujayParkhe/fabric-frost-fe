@@ -1,23 +1,29 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/hooks/use-toast";
-import { adminLogin } from "@/store/reducers/authReducer";
+import { adminLogin, messageClear } from "@/store/reducers/authReducer";
 import { CgPathExclude } from "react-icons/cg";
+import { LuLoader2 } from "react-icons/lu";
 
 import type { LoginProps } from "@/types/auth";
-import type { AppDispatch } from "@/store/store";
+import type { AppDispatch, RootState } from "@/store/store";
 
 const AdminLogin: React.FC<LoginProps> = ({ email, password }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { loader, successMessage, errorMessage } = useSelector(
+    (state: RootState) => state.auth
+  );
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
   const [signinDetails, setSigninDetails] = useState<LoginProps>({
     email,
     password,
   });
-  const { toast } = useToast();
 
   const handleAdminLoginDetails = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSigninDetails({
@@ -28,26 +34,29 @@ const AdminLogin: React.FC<LoginProps> = ({ email, password }) => {
 
   const submitAdminLoginDetails = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (
-      signinDetails.email === "admin@fabricfrost.com" &&
-      signinDetails.password === "admin123"
-    ) {
+    dispatch(adminLogin(signinDetails));
+  };
+
+  useEffect(() => {
+    if (successMessage) {
       toast({
         title: "Login Successful",
         description: "Welcome to the admin panel.",
-        duration: 3000,
+        duration: 1000,
       });
-      // Here you would typically redirect to the admin dashboard
-    } else {
+      dispatch(messageClear());
+      navigate("/");
+    }
+    if (errorMessage) {
       toast({
         title: "Login Failed",
         description: "Invalid email or password. Please try again.",
         variant: "destructive",
         duration: 3000,
       });
+      dispatch(messageClear());
     }
-    dispatch(adminLogin(signinDetails));
-  };
+  }, [errorMessage, successMessage]);
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center">
@@ -89,7 +98,16 @@ const AdminLogin: React.FC<LoginProps> = ({ email, password }) => {
                     onChange={handleAdminLoginDetails}
                   />
                 </div>
-                <Button type="submit">Log into Admin Panel</Button>
+                <Button type="submit" disabled={loader}>
+                  {loader ? (
+                    <>
+                      <LuLoader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Logging in...
+                    </>
+                  ) : (
+                    "Log In to Admin Panel"
+                  )}
+                </Button>
               </div>
             </form>
           </div>

@@ -1,3 +1,5 @@
+import { RouteObject } from "react-router-dom";
+
 type LoginProps = {
   email: string;
   password: string;
@@ -9,8 +11,9 @@ type SignUpProps = {
   password: string;
 };
 
-interface ErrorMessage {
-  message: string;
-}
+type CustomRouteObject = RouteObject & {
+  ability?: string[];
+  role?: string;
+};
 
-export type { LoginProps, SignUpProps, ErrorMessage };
+export type { LoginProps, SignUpProps, CustomRouteObject };
