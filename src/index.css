@@ -6,6 +6,8 @@
 @layer base {
   :root {
     --radius: 0.5rem;
+    --card: 253 43% 4%;
+    --accent: 253 13% 14%;
   }
 }
 

@@ -14,6 +14,9 @@ export default {
       },
       colors: {
         "muted-foreground": "#6B7280",
+        card: "hsl(var(--card))",
+        accent: "hsl(var(--accent))",
+        "accent-foreground": "hsl(var(--foreground))",
       },
     },
   },
