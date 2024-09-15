@@ -6,7 +6,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
   SheetContent,
-  SheetTrigger,
   SheetTitle,
   SheetHeader,
   SheetDescription,
@@ -14,15 +13,19 @@ import {
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { CiLogout } from "react-icons/ci";
 import { CgPathExclude } from "react-icons/cg";
-import { HiMenuAlt1 } from "react-icons/hi";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
 import getNavByRole from "@/navigation";
 import Nav from "@/types/nav";
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  isMobile: boolean;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isMobile, isOpen, onClose }) => {
   const location = useLocation();
   const [nav, setNav] = useState<Nav[]>([]);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
   const toggleSidebar = () => {
@@ -32,27 +35,12 @@ const Sidebar: React.FC = () => {
   useEffect(() => {
     const navs = getNavByRole("admin");
     setNav(navs);
-
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-
-    return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
-      <div className="p-6">
-        <Link
-          to="/admin/dashboard"
-          className={cn(
-            "flex items-center",
-            isCollapsed ? "-ml-[7px]" : "-ml-[4px]"
-          )}
-        >
+      <div className={cn("p-6", isCollapsed && "p-2")}>
+        <Link to="/admin/dashboard" className={cn("flex items-center")}>
           <CgPathExclude className="h-9 w-9" color="white" />
           {(!isCollapsed || isMobile) && (
             <span className="text-2xl font-bold text-white">FabricFrost</span>
@@ -75,7 +63,10 @@ const Sidebar: React.FC = () => {
           </Button>
         )}
       </div>
-      <ScrollArea isCollapsed={isCollapsed} className="flex-1 px-3">
+      <ScrollArea
+        isCollapsed={isCollapsed}
+        className={cn("flex-1", isCollapsed ? "px-1" : "px-3")}
+      >
         <nav className="flex flex-col space-y-1">
           {nav.map((item) => {
             const isActive = location.pathname === item.path;
@@ -98,7 +89,7 @@ const Sidebar: React.FC = () => {
           })}
         </nav>
       </ScrollArea>
-      <div className="p-4 mt-auto">
+      <div className={cn("mt-auto", isCollapsed ? "p-2" : "p-4")}>
         <Button
           variant="outline"
           size="icon"
@@ -113,13 +104,7 @@ const Sidebar: React.FC = () => {
 
   if (isMobile) {
     return (
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <HiMenuAlt1 className="h-6 w-6" />
-            <span className="sr-only">Toggle navigation menu</span>
-          </Button>
-        </SheetTrigger>
+      <Sheet open={isOpen} onOpenChange={onClose}>
         <SheetContent side="left" className="p-0 w-64 bg-card">
           <SheetHeader>
             <SheetDescription>
