@@ -65,7 +65,7 @@ const navMenu: Nav[] = [
     title: "Live Chat",
     icon: MdOutlineMarkChatUnread,
     role: "admin",
-    path: "/admin/dashboard/chat-seller",
+    path: "/admin/dashboard/seller-chat",
   },
 ];
 
